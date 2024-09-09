@@ -10,11 +10,16 @@ import com.project.bookRide.app.dto.RideDto;
 import com.project.bookRide.app.dto.RideRequestDto;
 import com.project.bookRide.app.dto.RiderDto;
 import com.project.bookRide.app.entities.RideRequest;
+import com.project.bookRide.app.entities.Rider;
+import com.project.bookRide.app.entities.User;
 import com.project.bookRide.app.entities.enums.RideRequestStatus;
+import com.project.bookRide.app.exceptions.ResourceNotFoundException;
 import com.project.bookRide.app.repositories.RideRequestRepository;
+import com.project.bookRide.app.repositories.RiderRepository;
 import com.project.bookRide.app.services.RiderService;
 import com.project.bookRide.app.strategies.DriverMatchingStrategy;
 import com.project.bookRide.app.strategies.RideFareCalculationStrategy;
+import com.project.bookRide.app.strategies.StrategyManager;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,19 +31,23 @@ public class RiderServiceImpl implements RiderService {
 	
 	private final ModelMapper modelMapper;
 	private final RideFareCalculationStrategy rideFareCalculationStrategy;
+	private final StrategyManager strategyManager;
 	private final DriverMatchingStrategy driverMatchingStrategy;
 	private final RideRequestRepository rideRequestRepository;
+	private final RiderRepository riderRepository;
 	
 	@Override
 	public RideRequestDto requestRide(RideRequestDto rideRequestDto) {
+		
+		Rider rider = getCurrentRider();
 		RideRequest rideRequest = modelMapper.map(rideRequestDto, RideRequest.class);
 		rideRequest.setRideRequestStatus(RideRequestStatus.PENDING);
 		
-		Double fare = rideFareCalculationStrategy.calculateFare(rideRequest);
+		Double fare = strategyManager.rideFareCalculationStrategy().calculateFare(rideRequest);
 		rideRequest.setFare(fare);
 		
 		RideRequest savedRideRequest = rideRequestRepository.save(rideRequest);
-		driverMatchingStrategy.findMatchingDrivers(rideRequest);
+		strategyManager.driverMatchingStrategy(rider.getRating()).findMatchingDrivers(rideRequest);
 		
 		
 		log.info(rideRequest.toString());
@@ -67,6 +76,22 @@ public class RiderServiceImpl implements RiderService {
 	public List<RideDto> getAllMyRides() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public Rider createNewRider(User user) {
+		Rider rider = Rider.builder()
+					.user(user)
+					.rating(0.0)
+					.build(); 
+		return riderRepository.save(rider);
+	}
+
+	@Override
+	public Rider getCurrentRider() {
+		// TODO Auto-generated method stub
+		return riderRepository.findById(1L).orElseThrow(()-> 
+					new ResourceNotFoundException("Rider not found with id: "+1));
 	}
 
 }
