@@ -6,9 +6,9 @@ import com.project.bookRide.app.dto.UserDto;
 
 public interface AuthService {
 
-	String login(String email, String password);
+	String[] login(String email, String password);
 	
 	UserDto signup(SignupDto signupDto);
 	
-	DriverDto onboradNewDriver(Long userId);
+	DriverDto onboradNewDriver(Long userId, String vehicalId);
 }

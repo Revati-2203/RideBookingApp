@@ -17,7 +17,7 @@ public class StrategyManager {
 	
 	private final HighestRatedDriverMatchingStrategy highestRatedDriverMatchingStrategy;
 	private final NearestDriverMatchingStrategy nearestDriverMatchingStrategy;
-	private final SurgePricingRideFareCalculationStrategy rideFareCalculationStrategy;
+	private final SurgePricingRideFareCalculationStrategy surgePricingRideFareCalculationStrategy;
 	private final DefaultRideFareCalculationStrategy defaultRideFareCalculationStrategy;
 	
 	public DriverMatchingStrategy driverMatchingStrategy(double riderRating) {
@@ -37,7 +37,7 @@ public class StrategyManager {
 		boolean isSurgeTime = currentTime.isAfter(surgeStartTime) && currentTime.isBefore(surgeEndTime);
 		
 		if(isSurgeTime) {
-			return rideFareCalculationStrategy;
+			return surgePricingRideFareCalculationStrategy;
 		}else {
 			return defaultRideFareCalculationStrategy;
 		}

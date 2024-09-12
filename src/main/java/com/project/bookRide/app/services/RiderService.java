@@ -2,6 +2,9 @@ package com.project.bookRide.app.services;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+
 import com.project.bookRide.app.dto.DriverDto;
 import com.project.bookRide.app.dto.RideDto;
 import com.project.bookRide.app.dto.RideRequestDto;
@@ -15,11 +18,11 @@ public interface RiderService {
 	
 	RideDto cancelRide(Long rideId);
 	
-	DriverDto rateRider(Long rideId, Integer rating);
+	DriverDto rateDriver(Long rideId, Integer rating);
 	
 	RiderDto getMyProfile();
 	
-	List<RideDto> getAllMyRides();
+	Page<RideDto> getAllMyRides(PageRequest pageRequest);
 	
 	Rider createNewRider(User user);
 	

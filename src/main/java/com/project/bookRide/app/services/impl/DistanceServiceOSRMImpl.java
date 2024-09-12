@@ -9,41 +9,38 @@ import org.springframework.web.client.RestClient;
 import com.project.bookRide.app.services.DistanceService;
 
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 public class DistanceServiceOSRMImpl implements DistanceService{
 
-	private static final String OSRM_API = "http://router.project-osrm.org/route/v1/driving/";
-	
-	@Override
-	public double calculateDistance(Point src, Point dest) {
-		try {
-			String uri = src.getX()+","+src.getY()+";"+dest.getX()+","+dest.getY();
-			ORSMResponseDto responseDto = RestClient.builder()
-				.baseUrl(OSRM_API)
-				.build()
-				.get()
-				.uri(uri)
-				.retrieve()
-				.body(ORSMResponseDto.class);
-		
-				return responseDto.getRoutes().get(0).getDistance()/1000.0;
-				
-		}catch (Exception e) {
-			throw new RuntimeException("error getting data from OSRM "+e.getMessage());
-		} 
-	}
-	
-	@Data
-	class ORSMResponseDto {
-		private List<OSRMRoute> routes;
-	}
-	
-	@Data
-	class OSRMRoute {
-		private Double distance;
-	}
-	
-	
+    private static final String OSRM_API_BASE_URL = "https://router.project-osrm.org/route/v1/driving/";
 
+    @Override
+    public double calculateDistance(Point src, Point dest) {
+        try {
+            String uri = src.getX()+","+src.getY()+";"+dest.getX()+","+dest.getY();
+            OSRMResponseDto responseDto = RestClient.builder()
+                    .baseUrl(OSRM_API_BASE_URL)
+                    .build()
+                    .get()
+                    .uri(uri)
+                    .retrieve()
+                    .body(OSRMResponseDto.class);
+
+            return responseDto.getRoutes().get(0).getDistance() / 1000.0;
+        } catch (Exception e) {
+            throw new RuntimeException("Error getting data from OSRM "+e.getMessage());
+        }
+    }
+}
+
+@Data
+class OSRMResponseDto {
+    private List<OSRMRoute> routes;
+}
+
+@Data
+class OSRMRoute {
+    private Double distance;
 }

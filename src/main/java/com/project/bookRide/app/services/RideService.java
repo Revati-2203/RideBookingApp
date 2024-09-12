@@ -6,19 +6,19 @@ import org.springframework.data.domain.PageRequest;
 import com.project.bookRide.app.dto.RideRequestDto;
 import com.project.bookRide.app.entities.Driver;
 import com.project.bookRide.app.entities.Ride;
+import com.project.bookRide.app.entities.RideRequest;
+import com.project.bookRide.app.entities.Rider;
 import com.project.bookRide.app.entities.enums.RideStatus;
 
 public interface RideService {
 	
-	Ride getRideById(Long Ride);
+	Ride getRideById(Long ride);
+
+	Ride createNewRide(RideRequest rideRequest, Driver driver);
 	
-	void matchWithDrivers(RideRequestDto rideRequestDto);
+	Ride updateRideStatus(Ride ride, RideStatus rideStatus);
 	
-	Ride createNewRide(RideRequestDto rideRequestDto, Driver driver);
+	Page<Ride> getAllRidesOfRider(Rider rider, PageRequest pageRequest);
 	
-	Ride updateRideStatus(Long rideId, RideStatus rideStatus);
-	
-	Page<Ride> getAllRidesOfRider(Long riderId, PageRequest pageRequest);
-	
-	Page<Ride> getAllRidesOfDriver(Long driverId, PageRequest pageRequest);
+	Page<Ride> getAllRidesOfDriver(Driver driver, PageRequest pageRequest);
 }

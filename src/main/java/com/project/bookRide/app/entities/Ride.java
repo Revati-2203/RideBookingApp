@@ -7,8 +7,20 @@ import com.project.bookRide.app.entities.enums.PaymentMethod;
 import com.project.bookRide.app.entities.enums.RideStatus;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
+@Table(indexes = {
+		@Index(name = "idx_rider", columnList = "rider_id"),
+		@Index(name = "idx_driver_id", columnList = "driver_id")
+})
 public class Ride {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
